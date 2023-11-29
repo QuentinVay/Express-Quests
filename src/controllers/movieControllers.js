@@ -130,8 +130,13 @@ const putUsersId = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
+      if (err.code === "ER_DUP_ENTRY") {
+        // Gérer le cas où l'e-mail est déjà utilisé, par exemple en renvoyant un statut 409 Conflict.
+        res.status(409).json({ message: "Email already in use" });
+      } else {
+        console.error(err);
+        res.sendStatus(500);
+      }
     });
 };
 
