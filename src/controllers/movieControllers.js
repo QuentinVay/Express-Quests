@@ -47,7 +47,29 @@ const postMovie = (req, res) => {
     });
 };
 
-// CONGTROLLERS FOR USERS //************************************* */
+const putMovieId = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "update movies set title =?, director=?, year=?,color=?,duration=? where id = ?",
+      [title, director, year, color, duration, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+};
+
+// CONTROLLERS FOR USERS //************************************* */
 
 const getUsers = (req, res) => {
   database.query("SELECT * FROM users").then(([users]) => {
@@ -91,11 +113,35 @@ const postUsers = (req, res) => {
     });
 };
 
+const putUsersId = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { firstname, lastname, email, city, language } = req.body;
+
+  database
+    .query(
+      "update users set firstname = ?, lastname =?, email =?, city =?, language=? where id =?",
+      [firstname, lastname, email, city, language, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.sendStatus(404);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+};
+
 module.exports = {
   getMovies,
   getMovieById,
+  postMovie,
+  putMovieId,
   getUsersById,
   getUsers,
-  postMovie,
   postUsers,
+  putUsersId,
 };
