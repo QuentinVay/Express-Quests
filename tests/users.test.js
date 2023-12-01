@@ -109,11 +109,11 @@ describe("PUT /api/users/:id", () => {
     const id = result.insertId;
 
     const updatedUser = {
-      firstname: "Jojo",
-      lastname: "Jaja",
-      email: "jojo.jaja@exemple.com",
-      city: "Jiji",
-      language: "Juju",
+      firstname: "Marie",
+      lastname: "Martin",
+      email: `${crypto.randomUUID()}@wild.co`,
+      city: "Paris",
+      language: "French",
     };
 
     const response = await request(app)
@@ -169,6 +169,35 @@ describe("PUT /api/users/:id", () => {
     };
 
     const response = await request(app).put("/api/users/0").send(newUser);
+
+    expect(response.status).toEqual(404);
+  });
+});
+
+describe("DELETE /api/users/:id", () => {
+  it("should delete one user", async () => {
+    const newUser = {
+      firstname: "John",
+      lastname: "Doe",
+      email: `${crypto.randomUUID()}@example.com`,
+      city: "New York",
+      language: "English",
+    };
+
+    const postResponse = await request(app).post("/api/users").send(newUser);
+    const userId = postResponse.body.id;
+
+    const deleteResponse = await request(app).delete(`/api/users/${userId}`);
+
+    expect(deleteResponse.status).toEqual(204);
+
+    const notFoundResponse = await request(app).get(`/api/users/${userId}`);
+
+    expect(notFoundResponse.status).toEqual(404);
+  });
+
+  it("should delete no user", async () => {
+    const response = await request(app).delete("/api/users/0");
 
     expect(response.status).toEqual(404);
   });

@@ -15,8 +15,8 @@ const getUsers = database.query("SELECT * FROM users");
 
 Promise.all([getMovies, getUsers])
   .then(([movies, users]) => {
-    console.log(movies[0]);
-    console.log(users[0]);
+    // console.log(movies[0]);
+    // console.log(users[0]);
   })
   .catch((err) => {
     console.error(err);

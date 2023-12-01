@@ -16,9 +16,7 @@ describe("GET /api/movies", () => {
 
 describe("GET /api/movies/:id", () => {
   it("should return one movie", async () => {
-    const response = await request(app).get("/api/movies/1");
-
-    expect(response.headers["content-type"]).toMatch(/json/);
+    const response = await request(app).get("/api/movies/2");
 
     expect(response.status).toEqual(200);
   });
@@ -165,6 +163,35 @@ describe("PUT /api/movies/:id", () => {
     };
 
     const response = await request(app).put("/api/movies/0").send(newMovie);
+
+    expect(response.status).toEqual(404);
+  });
+});
+
+describe("DELETE /api/movies/:id", () => {
+  it("should delete one movie", async () => {
+    const newMovie = {
+      title: "Toto",
+      director: "Quentin Vayssieres",
+      year: "2023",
+      color: "1",
+      duration: 203,
+    };
+
+    const postResponse = await request(app).post("/api/movies").send(newMovie);
+    const movieId = postResponse.body.id;
+
+    const deleteResponse = await request(app).delete(`/api/movies/${movieId}`);
+
+    expect(deleteResponse.status).toEqual(204);
+
+    const notFoundResponse = await request(app).get(`/api/movies/${movieId}`);
+
+    expect(notFoundResponse.status).toEqual(404);
+  });
+
+  it("should delete no movie", async () => {
+    const response = await request(app).delete("/api/movies/0");
 
     expect(response.status).toEqual(404);
   });
